@@ -1,5 +1,5 @@
 const jwt = require('jwt-simple')
-const config = require('../config/config.json')
+const config = require('../config.json')
 
 function encodeToken(id) {
 
@@ -20,7 +20,10 @@ function decodeToken(token, callback) {
     }
 }
 
+
+
 module.exports = {
     encodeToken,
-    decodeToken
+    decodeToken,
+	
 }

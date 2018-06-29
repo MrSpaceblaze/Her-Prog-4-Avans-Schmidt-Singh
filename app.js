@@ -2,6 +2,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
+const auth_controller = require('./controller/auth_controller');
 
 app.use(bodyParser.urlencoded({
     'extended': 'true'
