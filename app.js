@@ -12,6 +12,8 @@ app.use(bodyParser.json({
     type: 'application/vnd.api+json'
 }));
 
+app.use('/api/login',auth_controller.login)
+app.use('/api/register',auth_controller.register)
 app.all('*', auth_controller.validateToken);
 
 app.all("*", (req, res) => {
