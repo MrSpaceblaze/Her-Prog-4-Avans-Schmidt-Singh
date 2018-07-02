@@ -9,7 +9,7 @@ module.exports = {
         let email = request.body.email;
         let password = request.body.password;
 
-        db.query('SELECT email, password FROM user WHERE email = ?', [email], function (error, rows, fields) {
+        db.query('SELECT email, ID, password FROM user WHERE email = ?', [email], function (error, rows, fields) {
             if (error) {
                 response.status(500).json(error)
             }
@@ -17,7 +17,7 @@ module.exports = {
             console.log(rows)
 
             if (email == rows[0].email && password == rows[0].password) {
-                let token = auth.encodeToken(email);
+                let token = auth.encodeToken(rows[0].ID);
                 response.status(200).json({
                     "msg": token,
                     "status": 200,
@@ -110,8 +110,8 @@ module.exports = {
 			}).end()
             return;
         }
-
-        auth.decodeToken(token, (err, payload) => {
+		
+        auth.decodeToken(token.substring(7), (err, payload) => {
             if (err) {
                 response.status(401).json({"message":err})
             } else{
