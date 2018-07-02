@@ -16,7 +16,7 @@ app.use(bodyParser.json({
 app.post('/api/login',auth_controller.login)
 app.post('/api/register',auth_controller.register)
 app.all('*', auth_controller.validateToken);
-app.use('/api/categorie',)
+app.use('/api/categorie',categorie)
 app.all("*", (req, res) => {
     res.status(404).json({
         error: "Endpoint not found"
