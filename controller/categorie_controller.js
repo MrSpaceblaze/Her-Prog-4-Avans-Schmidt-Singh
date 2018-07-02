@@ -1,4 +1,4 @@
-const db = require(../database/db)
+const db = require('../database/db')
 const auth = require('../authentication/authentication')
 
 module.exports={
@@ -9,7 +9,7 @@ module.exports={
 			}
 			res.status(200).json(rows).end()
 		})
-	}
+	},
 	postNew: (req,res)=>{
 		var token = request.get('Authorization')
         var subUserID = token.substr(7)
@@ -49,7 +49,7 @@ module.exports={
 				res.status(200).json(returnJSON).end()
 			})
 		})
-	}
+	},
 	
 	getByID: (req,res)=>{
 		query = {
@@ -75,7 +75,7 @@ module.exports={
 				}
 				res.status(200).json(returnJSON).end()
 			})
-	}
+	},
 	changeByID: (req,res)=>{
 		var token = request.get('Authorization')
         var subUserID = token.substr(7)
@@ -140,7 +140,7 @@ module.exports={
 				})
 			}
 		})
-	}
+	},
 	deleteByID: (req,res)=>{
 		var token = request.get('Authorization')
         var subUserID = token.substr(7)
@@ -173,6 +173,6 @@ module.exports={
 			db.query(query,(err,rows,fields)=>{
 				
 			})
-		}
+		})
 	}
 }
