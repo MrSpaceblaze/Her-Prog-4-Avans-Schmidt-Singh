@@ -16,7 +16,11 @@ module.exports={
         var decodedUserID = auth.decodeToken(subUserID)
 		
 		if(req.body.naam==null||req.body.beschrijving==null){
-			res.status(412).json().end()
+			res.status(412).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":412,
+				"datetime": new Date().toLocaleString()
+			}).end()
 		}
 		let query = {
 			sql: 'INSERT INTO categorie(Naam,Beschrijving,UserID) VALUES (?,?,?)',
@@ -56,7 +60,11 @@ module.exports={
 			db.query(query,(err,rows,fields)=>{
 				let body = rows[0]
 				if (body == null){
-					res.status(404).json().end()
+					res.status(404).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":404,
+				"datetime": new Date().toLocaleString()
+			}).end()
 				}
 				let returnJSON = {
 					"ID":body.ID,
@@ -74,7 +82,11 @@ module.exports={
         var decodedUserID = auth.decodeToken(subUserID)
 		let body = req.body
 		if(req.body.naam==null||req.body.beschrijving==null){
-			res.status(412).json().end()
+			res.status(412).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":412,
+				"datetime": new Date().toLocaleString()
+			}).end()
 		}
 		let query = {
 			sql: 'SELECT UserID FROM categorie WHERE ID = ?',
@@ -83,10 +95,18 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if (rows[0]==null){
-				res.status(404).json().end()
+				res.status(404).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":404,
+				"datetime": new Date().toLocaleString()
+			}).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
-				res.status(409).json().end()
+				res.status(409).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":409,
+				"datetime": new Date().toLocaleString()
+			}).end()
 			}else{
 				query = {
 					sql: 'Update categorie SET Naam = ?, Beschrijving = ? WHERE UserID = ? AND ID = ?',
@@ -102,7 +122,11 @@ module.exports={
 			db.query(query,(err,rows,fields)=>{
 				let body = rows[0]
 				if (body == null){
-					res.status(404).json().end()
+					res.status(404).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":412,
+				"datetime": new Date().toLocaleString()
+			}).end()
 				}
 				let returnJSON = {
 					"ID":body.ID,
@@ -128,10 +152,18 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if (rows[0]==null){
-				res.status(404).json().end()
+				res.status(404).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":404,
+				"datetime": new Date().toLocaleString()
+			}).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
-				res.status(409).json().end()
+				res.status(409).json({
+				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
+				"code":412,
+				"datetime": new Date().toLocaleString()
+			}).end()
 			}
 			query={
 				sql: 'DELETE FROM categorie WHERE ID = ?',
