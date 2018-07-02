@@ -3,11 +3,21 @@ const auth = require('../authentication/authentication')
 
 module.exports={
 	getAll: (req,res)=>{
-		db.query('SELECT * FROM categorie',(err,rows,fields)=>{
+		db.query('SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID',(err,rows,fields)=>{
 			if(err){
 				res.status(500).json(err).end()
 			}
-			res.status(200).json(rows).end()
+			let json = []
+			rows.forEach((row)=>{
+				json.push({
+					"ID":row.ID,
+					"naam":row.Naam,
+					"beschrijving":row.Beschrijving,
+					"beheerder":row.Voornaam+" "+row.Achternaam,
+					"email":row.email
+				})
+			})
+			res.status(200).json(json).end()
 		})
 	},
 	postNew: (req,res)=>{
