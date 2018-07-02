@@ -27,13 +27,14 @@ module.exports = {
                 if (!rows[0]) {
                     response.status(412).json({
 						"msg":"Invallid error",
+						"code":412
 						"parameters":response.body
 					})
                 } else if (email == rows[0].email && password == rows[0].password) {
                     var token = auth.encodeToken(email);
                     response.status(200).json({
                         "msg": token,
-                        "status": 200,
+                        "code": 200,
                         "parameters": response.body
                     })
                 } else if (!re.test(email)) {
@@ -104,13 +105,15 @@ module.exports = {
         let token = req.header("x-access-token") || ''
         let body = req.body
         if (token === '') {
-            next(new ApiError(401, "no token supplied"))
+            res.status(401).json({
+				"message":"no token supplied"
+			}).end()
             return;
         }
 
         auth.decodeToken(token, (err, payload) => {
             if (err) {
-                next(new ApiError(401, err))
+                res.status(401).json(err)
             } else {
                 let query = ("SELECT isAdmin FROM customer WHERE customerID = ?")
                 let values = [payload.sub]
@@ -122,7 +125,7 @@ module.exports = {
                         req.admin = rows[0].isAdmin
                         next()
                     } else {
-                        next(new ApiError(401, 'access denied'))
+                        res.status(401).json({'message':'access denied','code':401,'datetime':new Date().toLocaleString()})
                     }
                 })
             }
