@@ -2,7 +2,7 @@ const db = require('../database/db')
 const auth = require('../authentication/authentication')
 
 module.exports={
-	getAll: (req,res)=>{
+	getDelers: (req,res)=>{
 		let query = {
 			sql: 'SELECT * FROM view_delers WHERE categorieID = ? AND spullenID = ?',
 			values: [req.params.categorieID, req.params.spullenID],
@@ -20,12 +20,12 @@ module.exports={
                 }
                 res.status(404).json(json).end()
             } else {
-			    res.status(200).json(json).end()                
+			    res.status(200).json(rows).end()                
             }
 		})
     },
     
-	postNew: (req,res)=>{
+	postDeler: (req,res)=>{
         var token = request.get('Authorization')
         var subUserID = token.substr(7)
         var decodedUserID = auth.decodeToken(subUserID)
@@ -71,7 +71,7 @@ module.exports={
         })
     },
     
-    deleteByID: (req, res)=>{
+    deleteDeler: (req, res)=>{
         var token = request.get('Authorization')
         var subUserID = token.substr(7)
         var decodedUserID = auth.decodeToken(subUserID)

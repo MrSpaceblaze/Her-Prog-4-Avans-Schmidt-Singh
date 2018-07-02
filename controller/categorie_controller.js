@@ -30,7 +30,7 @@ module.exports={
 			res.status(412).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":412,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 		}
 		let query = {
@@ -77,7 +77,7 @@ module.exports={
 					res.status(404).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":404,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 				}
 				let returnJSON = {
@@ -99,7 +99,7 @@ module.exports={
 			res.status(412).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":412,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 		}
 		let query = {
@@ -112,14 +112,14 @@ module.exports={
 				res.status(404).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":404,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
 				res.status(409).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":409,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 			}else{
 				query = {
@@ -139,7 +139,7 @@ module.exports={
 					res.status(404).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":412,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 				}
 				let returnJSON = {
@@ -169,14 +169,14 @@ module.exports={
 				res.status(404).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":404,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
 				res.status(409).json({
 				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
 				"code":412,
-				"datetime": new Date().toLocaleString()
+				"datetime": Date.now()
 			}).end()
 			}
 			query={
