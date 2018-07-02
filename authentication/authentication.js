@@ -11,11 +11,13 @@ function encodeToken(id) {
 }
 
 function decodeToken(token, callback) {
-
+	console.log(token)
+	let jtoken = token.substring(7)
     try {
-        const payload = jwt.decode(token, config.secret);
+        const payload = jwt.decode(jtoken, config.secret);
         callback(null, payload)
     } catch (err) {
+		console.log(err)
         callback(err, null)
     }
 }
@@ -24,6 +26,6 @@ function decodeToken(token, callback) {
 
 module.exports = {
     encodeToken,
-    decodeToken,
+    decodeToken
 	
 }

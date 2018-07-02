@@ -27,7 +27,7 @@ module.exports = {
                 if (!rows[0]) {
                     response.status(412).json({
 						"msg":"Invallid error",
-						"code":412
+						"code":412,
 						"parameters":response.body
 					})
                 } else if (email == rows[0].email && password == rows[0].password) {
@@ -43,18 +43,18 @@ module.exports = {
 						"parameters":response.body
 					})
                 } else {
-                    error.invalidCredentials(response)
+                    response.status(401).json({"messsage":"niet geauthoriseerd (geen vallid token)","code":401})
                 }
             }
         })
     },
 
     register: function (request, response) {
-        var body = request.body
-        var firstname = request.body.firstname
-        var lastname = request.body.lastname
-        var email = request.body.email
-        var password = request.body.password
+        let body = request.body
+        let firstname = request.body.firstname
+        let lastname = request.body.lastname
+        let email = request.body.email
+        let password = request.body.password
 
         query = {
             sql: 'INSERT INTO `user`(Voornaam, Achternaam, Email, Password) VALUES (?, ?, ?, ?)',
@@ -64,21 +64,21 @@ module.exports = {
 
         db.query("SELECT Email FROM user WHERE Email = ?", [email], function (err, result) {
             if (result.length > 0) {
-                error.emailTaken(response)
+                response.status(412).json({"messsage":"Email is al gebruikt","code":412})
                 return
             } else {
-                if (firstname == '' || lastname == '' || email == '' || password == '') {
-                    error.missingProperties(response)
+		if (firstname == '' || lastname == '' || email == '' || password == '' || firstname == null || lastname == null || email == null || password == null) {
+                    response.status(412).json({"messsage":"mist een aantal properties","code":412})
                     return
                 }
 
                 if (firstname.length < 2 || lastname.length < 2) {
-                    error.missingProperties(response)
+                    response.status(412).json({"messsage":"mist een aantal properties","code":412})
                     return
                 }
 
                 if (!re.test(email)) {
-                    error.emailInvalid(response)
+                    response.status(412).json({"messsage":"Email klopt niet","code":412})
                     return
                 }
 
@@ -101,11 +101,11 @@ module.exports = {
         })
 
     },
-	validateToken(req, res, next) {
-        let token = req.header("x-access-token") || ''
+	validateToken(req, response, next) {
+        let token = req.get('Authorization')||''
         let body = req.body
         if (token === '') {
-            res.status(401).json({
+            response.status(401).json({
 				"message":"no token supplied"
 			}).end()
             return;
@@ -113,22 +113,10 @@ module.exports = {
 
         auth.decodeToken(token, (err, payload) => {
             if (err) {
-                res.status(401).json(err)
-            } else {
-                let query = ("SELECT isAdmin FROM customer WHERE customerID = ?")
-                let values = [payload.sub]
-                db.query(query, values, function (error, rows, fields) {
-                    if (error) {
-                        next(error)
-                    } else if (rows.length > 0) {
-                        req.user = payload.sub
-                        req.admin = rows[0].isAdmin
-                        next()
-                    } else {
-                        res.status(401).json({'message':'access denied','code':401,'datetime':new Date().toLocaleString()})
-                    }
-                })
-            }
+                response.status(401).json({"message":err})
+            } else{
+				next()
+			}
         })
     }
 }
