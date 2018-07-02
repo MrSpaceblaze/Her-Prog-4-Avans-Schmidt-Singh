@@ -21,9 +21,10 @@ module.exports={
 		})
 	},
 	postNew: (req,res)=>{
-		var token = request.get('Authorization')
+		var token = req.get('Authorization')
         var subUserID = token.substr(7)
-        var decodedUserID = auth.decodeToken(subUserID)
+        var decodedUserID = auth.decodeTokens(subUserID)
+        var decodedUserID = auth.decodeTokens(subUserID)
 		
 		if(req.body.naam==null||req.body.beschrijving==null){
 			res.status(412).json({
@@ -62,9 +63,12 @@ module.exports={
 	},
 	
 	getByID: (req,res)=>{
+		var token = req.get('Authorization')
+        var subUserID = token.substr(7)
+        var decodedUserID = auth.decodeTokens(subUserID)
 		query = {
-				sql: 'SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID WHERE Naam = ? AND Beschrijving = ? AND UserID = ?',
-				values: [req.body.naam,req.body.beschrijving,decodedUserID.sub],
+				sql: 'SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID WHERE categorie.ID = ?',
+				values: [req.params.categorieID],
 				timeout:30000
 			}
 			db.query(query,(err,rows,fields)=>{
@@ -89,7 +93,7 @@ module.exports={
 	changeByID: (req,res)=>{
 		var token = request.get('Authorization')
         var subUserID = token.substr(7)
-        var decodedUserID = auth.decodeToken(subUserID)
+        var decodedUserID = auth.decodeTokens(subUserID)
 		let body = req.body
 		if(req.body.naam==null||req.body.beschrijving==null){
 			res.status(412).json({
@@ -154,7 +158,7 @@ module.exports={
 	deleteByID: (req,res)=>{
 		var token = request.get('Authorization')
         var subUserID = token.substr(7)
-        var decodedUserID = auth.decodeToken(subUserID)
+        var decodedUserID = auth.decodeTokens(subUserID)
 		let query = {
 			sql: 'SELECT UserID FROM categorie WHERE ID = ?',
 			values: [req.params.categorieID],
