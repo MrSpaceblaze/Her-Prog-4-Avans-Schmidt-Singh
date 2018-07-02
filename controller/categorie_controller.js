@@ -91,7 +91,7 @@ module.exports={
 			})
 	},
 	changeByID: (req,res)=>{
-		var token = request.get('Authorization')
+		var token = req.get('Authorization')
         var subUserID = token.substr(7)
         var decodedUserID = auth.decodeTokens(subUserID)
 		let body = req.body
@@ -156,7 +156,7 @@ module.exports={
 		})
 	},
 	deleteByID: (req,res)=>{
-		var token = request.get('Authorization')
+		var token = req.get('Authorization')
         var subUserID = token.substr(7)
         var decodedUserID = auth.decodeTokens(subUserID)
 		let query = {
