@@ -30,17 +30,11 @@ module.exports={
         var decodedUserID = auth.decodeTokens(subUserID)
 		
 		if(req.body.naam==null||req.body.beschrijving==null){
-<<<<<<< HEAD
+
 			res.status(412).json(new ApiError(
 				"Een of meer properties in de request body ontbreken of zijn foutief",
 				412)).end()
-=======
-			res.status(412).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":412,
-				"datetime": Date.now()
-			}).end()
->>>>>>> Delers-Akash
+
 		}
 		let query = {
 			sql: 'INSERT INTO categorie(Naam,Beschrijving,UserID) VALUES (?,?,?)',
