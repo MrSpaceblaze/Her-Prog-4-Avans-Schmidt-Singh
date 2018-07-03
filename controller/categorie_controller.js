@@ -132,13 +132,12 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if (rows[0]==null){
-				res.status(404).json(new ApiError(
-				"categorie niet gevonden",
+				res.status(404).json(new ApiError("categorie niet gevonden",
 				404)
 			).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
-				res.status(409).json({
+				res.status(409).json(
 				new ApiError("Deze gebruiker mag deze data niet wijzigen",
 				409)
 			).end()

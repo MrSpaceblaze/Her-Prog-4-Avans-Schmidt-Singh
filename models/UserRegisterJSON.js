@@ -22,4 +22,4 @@ class UserRegisterJSON {
         return this.password
     }
 }
-module.exports=UserLoginJSON
+module.exports=UserRegisterJSON
