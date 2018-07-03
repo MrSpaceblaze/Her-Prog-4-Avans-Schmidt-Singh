@@ -6,6 +6,7 @@ const auth_controller = require('./controller/auth_controller')
 const categorie = require('./routes/categorie_routes');
 const spullen = require('./routes/spullen_routes')
 const delers = require('./routes/deler_routes')
+const port = process.env.PORT || 8082
 
 app.use(bodyParser.urlencoded({
     'extended': 'true'
@@ -28,7 +29,7 @@ app.all("*", (req, res) => {
 })
 
 // Listen
-var port = process.env.PORT || 8082
+console.log(port)
 let server = app.listen(8082, function () {
     let host = server.address().address
     let port = server.address().port
