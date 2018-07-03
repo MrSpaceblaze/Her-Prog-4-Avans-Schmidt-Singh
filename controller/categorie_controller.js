@@ -5,7 +5,7 @@ module.exports={
 	getAll: (req,res)=>{
 		db.query('SELECT * FROM categorie',(err,rows,fields)=>{
 			if(err){
-				res.status(500).json(err).end()
+				res.status(500).json(new ApiError("Internal Server error",500)).end()
 			}
 			res.status(200).json(rows).end()
 		})
@@ -16,11 +16,9 @@ module.exports={
         var decodedUserID = auth.decodeToken(subUserID)
 		
 		if(req.body.naam==null||req.body.beschrijving==null){
-			res.status(412).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":412,
-				"datetime": new Date().toLocaleString()
-			}).end()
+			res.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412)).end()
 		}
 		let query = {
 			sql: 'INSERT INTO categorie(Naam,Beschrijving,UserID) VALUES (?,?,?)',
@@ -29,7 +27,7 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if(err){
-				res.status(500).json(err).end()
+				res.status(500).json(new ApiError("Internal Server error",500)).end()
 			}
 			
 			query = {
@@ -38,19 +36,14 @@ module.exports={
 				timeout:30000
 			}
 			db.query(query,(err,rows,fields)=>{
-				let body = rows[0]
-				let returnJSON = {
-					"ID":body.ID,
-					"naam":body.Naam,
-					"beschrijving":body.Beschrijving,
-					"beheerder": body.Voornaam + " " + body.Achternaam,
-					"email": body.Email
+				if (err){
+					res.status(500).json(new ApiError("Internal Server error",500)).end()
 				}
-				res.status(200).json(returnJSON).end()
+				let body = rows[0]
+				res.status(200).json(new Categorie(body.ID,body.Naam,body.Beschrijving,body.Voornaam+" "+body.Achternaam,body.Email)).end()
 			})
 		})
 	},
-	
 	getByID: (req,res)=>{
 		query = {
 				sql: 'SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID WHERE Naam = ? AND Beschrijving = ? AND UserID = ?',
@@ -60,20 +53,13 @@ module.exports={
 			db.query(query,(err,rows,fields)=>{
 				let body = rows[0]
 				if (body == null){
-					res.status(404).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":404,
-				"datetime": new Date().toLocaleString()
-			}).end()
+					res.status(404).json(new ApiError(
+				"categorie niet gevonden",
+				404
+				)).end()
 				}
-				let returnJSON = {
-					"ID":body.ID,
-					"naam":body.Naam,
-					"beschrijving":body.Beschrijving,
-					"beheerder": body.Voornaam + " " + body.Achternaam,
-					"email": body.Email
-				}
-				res.status(200).json(returnJSON).end()
+				
+				res.status(200).json(new Categorie(body.ID,body.Naam,body.Beschrijving,body.Voornaam+" "+body.Achternaam,body.Email)).end()
 			})
 	},
 	changeByID: (req,res)=>{
@@ -82,11 +68,10 @@ module.exports={
         var decodedUserID = auth.decodeToken(subUserID)
 		let body = req.body
 		if(req.body.naam==null||req.body.beschrijving==null){
-			res.status(412).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":412,
-				"datetime": new Date().toLocaleString()
-			}).end()
+			res.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412
+				)).end()
 		}
 		let query = {
 			sql: 'SELECT UserID FROM categorie WHERE ID = ?',
@@ -95,18 +80,16 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if (rows[0]==null){
-				res.status(404).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":404,
-				"datetime": new Date().toLocaleString()
-			}).end()
+				res.status(404).json(new ApiError(
+				"categorie niet gevonden",
+				404
+				)).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
-				res.status(409).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":409,
-				"datetime": new Date().toLocaleString()
-			}).end()
+				res.status(409).json(new ApiError(
+				"Je mag deze data niet wijzigen",
+				409
+				)).end()
 			}else{
 				query = {
 					sql: 'Update categorie SET Naam = ?, Beschrijving = ? WHERE UserID = ? AND ID = ?',
@@ -115,28 +98,22 @@ module.exports={
 				}
 				db.query(query,(err,rows,fields)=>{
 					query = {
-				sql: 'SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID WHERE Naam = ? AND Beschrijving = ? AND UserID = ?',
-				values: [req.body.naam,req.body.beschrijving,decodedUserID.sub],
-				timeout:30000
-			}
-			db.query(query,(err,rows,fields)=>{
-				let body = rows[0]
-				if (body == null){
-					res.status(404).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":412,
-				"datetime": new Date().toLocaleString()
-			}).end()
-				}
-				let returnJSON = {
-					"ID":body.ID,
-					"naam":body.Naam,
-					"beschrijving":body.Beschrijving,
-					"beheerder": body.Voornaam + " " + body.Achternaam,
-					"email": body.Email
-				}
-				res.status(200).json(returnJSON).end()
-			})
+					sql: 'SELECT categorie.ID,categorie.Naam,categorie.Beschrijving,user.Voornaam,user.Achternaam,Email FROM categorie JOIN user On user.ID = categorie.UserID WHERE Naam = ? AND Beschrijving = ? AND UserID = ?',
+					values: [req.body.naam,req.body.beschrijving,decodedUserID.sub],
+					timeout:30000
+					}
+					db.query(query,(err,rows,fields)=>{
+						let body = rows[0]
+						if (body == null){
+							res.status(404).json(new ApiError(
+								"Categorie niet gevonden",
+								404
+								)).end()
+						}
+						res.status(200).json(
+							new CategorieResponse(body.ID,body.Naam,body.Beschrijving,body.Voornaam+" "+body.Achternaam,body.Email
+							)).end()
+					})
 				})
 			}
 		})
@@ -152,18 +129,16 @@ module.exports={
 		}
 		db.query(query,(err,rows,fields)=>{
 			if (rows[0]==null){
-				res.status(404).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":404,
-				"datetime": new Date().toLocaleString()
-			}).end()
+				res.status(404).json(new ApiError(
+				"categorie niet gevonden",
+				404)
+			).end()
 			}
 			if (rows[0].UserID != decodedUserID.sub){
 				res.status(409).json({
-				"message":"Een of meer properties in de request body ontbreken of zijn foutief",
-				"code":412,
-				"datetime": new Date().toLocaleString()
-			}).end()
+				new ApiError("Deze gebruiker mag deze data niet wijzigen",
+				409)
+			).end()
 			}
 			query={
 				sql: 'DELETE FROM categorie WHERE ID = ?',
@@ -171,7 +146,7 @@ module.exports={
 				timeout: 30000
 			}
 			db.query(query,(err,rows,fields)=>{
-				
+				res.status(200).json({}).end()
 			})
 		})
 	}

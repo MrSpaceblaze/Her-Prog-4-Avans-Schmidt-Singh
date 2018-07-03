@@ -11,39 +11,32 @@ module.exports = {
 
         db.query('SELECT email, password FROM user WHERE email = ?', [email], function (error, rows, fields) {
             if (error) {
-                response.status(500).json(error)
+                response.status(500).json(new ApiError("Internal Server error",500))
             }
 
             console.log(rows)
 
             if (email == rows[0].email && password == rows[0].password) {
                 let token = auth.encodeToken(email);
-                response.status(200).json({
-                    "msg": token,
-                    "status": 200,
-                    "parameters": response.body
-                });
+                response.status(200).json(new ValidToken(token,email)));
             } else {
                 if (!rows[0]) {
-                    response.status(412).json({
-						"msg":"Invallid error",
-						"code":412,
-						"parameters":response.body
-					})
+                    response.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412)
+					)
                 } else if (email == rows[0].email && password == rows[0].password) {
                     var token = auth.encodeToken(email);
-                    response.status(200).json({
-                        "msg": token,
-                        "code": 200,
-                        "parameters": response.body
-                    })
+                    response.status(200).json(new ValidToken(token,email))
                 } else if (!re.test(email)) {
-                    response.status(412).json({
-						"msg":"Invallid error",
-						"parameters":response.body
+                    response.status(412).json(new ApiError(
+				"Verkeerde Email",
+				412)
 					})
                 } else {
-                    response.status(401).json({"messsage":"niet geauthoriseerd (geen vallid token)","code":401})
+                    response.status(401).json(new ApiError(
+				"Not Authorised",
+				401))
                 }
             }
         })
@@ -64,37 +57,35 @@ module.exports = {
 
         db.query("SELECT Email FROM user WHERE Email = ?", [email], function (err, result) {
             if (result.length > 0) {
-                response.status(412).json({"messsage":"Email is al gebruikt","code":412})
+                response.status(412).json(new ApiError("Email is al gebruikt",412))
                 return
             } else {
 		if (firstname == '' || lastname == '' || email == '' || password == '' || firstname == null || lastname == null || email == null || password == null) {
-                    response.status(412).json({"messsage":"mist een aantal properties","code":412})
+                    response.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412))
                     return
                 }
 
                 if (firstname.length < 2 || lastname.length < 2) {
-                    response.status(412).json({"messsage":"mist een aantal properties","code":412})
+                    response.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412))
                     return
                 }
 
                 if (!re.test(email)) {
-                    response.status(412).json({"messsage":"Email klopt niet","code":412})
+                    response.status(412).json(new ApiError(
+				"Een of meer properties in de request body ontbreken of zijn foutief",
+				412))
                     return
                 }
 
                 db.query(query, function (error, rows, field) {
                     if (error) {
-                        response.status(500).json({
-                            "msg": error,
-                            "status": 500,
-                            "parameters": request.body
-                        })
+                        response.status(500).json(new ApiError("Internal Server error",500))
                     } else {
-                        response.status(200).json({
-                            "msg": "User has been registered",
-                            "status": 200,
-                            "parameters": request.body
-                        })
+                        response.status(200).json(new UserRegisterJSON(firstname,lastname,email,password))
                     }
                 })
             }
@@ -105,15 +96,13 @@ module.exports = {
         let token = req.get('Authorization')||''
         let body = req.body
         if (token === '') {
-            response.status(401).json({
-				"message":"no token supplied"
-			}).end()
+            response.status(401).json(new ApiError("no token supplied",401)).end()
             return;
         }
 
         auth.decodeToken(token, (err, payload) => {
             if (err) {
-                response.status(401).json({"message":err})
+                response.status(401).json(new ApiError(err,401))
             } else{
 				next()
 			}
