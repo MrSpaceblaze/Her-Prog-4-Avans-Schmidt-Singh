@@ -30,7 +30,7 @@ app.all("*", (req, res) => {
 
 // Listen
 console.log(port)
-let server = app.listen(8082, function () {
+let server = app.listen(port, function () {
     let host = server.address().address
     let port = server.address().port
 
