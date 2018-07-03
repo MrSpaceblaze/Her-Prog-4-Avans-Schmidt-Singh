@@ -43,7 +43,7 @@ module.exports={
 			if (err){
 				res.status(500).json({
 					"message":"Internal server error",
-					"code":500
+					"code":500,
 					"datetime":Date.now()
 				})
 			}
@@ -51,7 +51,7 @@ module.exports={
 				if (err){
 					res.status(500).json({
 						"message":"Internal server error",
-						"code":500
+						"code":500,
 						"datetime":Date.now()
 					})
 				}
@@ -84,7 +84,7 @@ module.exports={
 			if (err){
 				res.status(500).json({
 						"message":"Internal server error",
-						"code":500
+						"code":500,
 						"datetime":Date.now()
 					})
 			}
@@ -132,7 +132,7 @@ module.exports={
 				})
 			} else {
 				res.status(409).json({
-					"message":"Gebruiker mag deze data niet verwijderen"
+					"message":"Gebruiker mag deze data niet verwijderen",
 					"code":409,
 					"datetime":Date.now()
 				})
