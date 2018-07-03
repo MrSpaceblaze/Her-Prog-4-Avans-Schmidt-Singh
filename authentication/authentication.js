@@ -12,9 +12,8 @@ function encodeToken(id) {
 
 function decodeToken(token, callback) {
 	console.log(token)
-	let jtoken = token.substring(7)
     try {
-        const payload = jwt.decode(jtoken, config.secret);
+        const payload = jwt.decode(token, config.secret);
         callback(null, payload)
     } catch (err) {
 		console.log(err)
@@ -22,11 +21,13 @@ function decodeToken(token, callback) {
     }
 }
 function decodeTokens(token){
-	try{
-		return jwt.decode(token,config.secret)
-	} catch(err){
+	try {
+        const payload = jwt.decode(token, config.secret);
+        return payload
+    } catch (err) {
 		console.log(err)
-	}
+		return null;
+    }
 }
 
 
