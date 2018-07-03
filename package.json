@@ -1,0 +1,24 @@
+{
+  "name": "Prog-4-Avans-Schmidt-Singh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrSpaceblaze/Her-Prog-4-Avans-Schmidt-Singh.git"
+  },
+  "homepage":"https://github.com/MrSpaceblaze/Her-Prog-4-Avans-Schmidt-Singh",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
+    "jwt-simple": "^0.5.1",
+    "mysql": "^2.15.0",
+    "nodemon": "^1.17.5",
+    "npm": "^6.0.1"
+  }
+}

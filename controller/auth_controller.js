@@ -1,5 +1,8 @@
 const auth = require('../authentication/authentication');
 const db = require('../database/db')
+const UserLoginJSON = require('../models/UserLoginJSON')
+const UserRegisterJSON = require('../models/UserRegisterJSON')
+const ValidToken = require('../models/ValidToken')
 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 module.exports = {
@@ -18,7 +21,7 @@ module.exports = {
 
             if (email == rows[0].email && password == rows[0].password) {
                 let token = auth.encodeToken(email);
-                response.status(200).json(new ValidToken(token,email)));
+                response.status(200).json(new ValidToken(token,email));
             } else {
                 if (!rows[0]) {
                     response.status(412).json(new ApiError(
@@ -31,8 +34,7 @@ module.exports = {
                 } else if (!re.test(email)) {
                     response.status(412).json(new ApiError(
 				"Verkeerde Email",
-				412)
-					})
+				412 ))
                 } else {
                     response.status(401).json(new ApiError(
 				"Not Authorised",

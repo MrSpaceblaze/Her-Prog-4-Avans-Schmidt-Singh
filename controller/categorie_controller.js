@@ -1,5 +1,8 @@
 const db = require('../database/db')
 const auth = require('../authentication/authentication')
+const ApiError = require('../models/ApiError')
+const Categorie = require('../models/Categorie')
+const CategorieResponse = require('../models/CategorieResponse')
 
 module.exports={
 	getAll: (req,res)=>{
