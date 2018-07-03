@@ -28,7 +28,7 @@ app.all("*", (req, res) => {
 })
 
 // Listen
-let port = process.env.PORT || 8082
+var port = process.env.PORT || 8082
 let server = app.listen(8082, function () {
     let host = server.address().address
     let port = server.address().port
