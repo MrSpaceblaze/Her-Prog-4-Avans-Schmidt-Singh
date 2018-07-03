@@ -21,11 +21,18 @@ function decodeToken(token, callback) {
         callback(err, null)
     }
 }
+function decodeTokens(token){
+	try{
+		return jwt.decode(token,config.secret)
+	} catch(err){
+		console.log(err)
+	}
+}
 
 
 
 module.exports = {
     encodeToken,
-    decodeToken
-	
+    decodeToken,
+	decodeTokens
 }
