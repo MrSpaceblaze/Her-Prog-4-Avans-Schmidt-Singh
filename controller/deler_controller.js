@@ -1,5 +1,7 @@
 const db = require('../database/db')
 const auth = require('../authentication/authentication')
+const ApiError = require('../models/ApiError')
+const DelerResponse = require('../models/DelerResponse')
 
 module.exports={
 	getDelers: (req,res)=>{
@@ -13,14 +15,13 @@ module.exports={
 				res.status(500).json(err).end()
             }
             if(rows.length == 0) {
-                let json = {
-                    message: 'Niet gevonden (categorieId of spullenId bestaat niet)',
-                    code: 404,
-                    datetime: Date.now()
-                }
-                res.status(404).json(json).end()
+                res.status(404).json(new ApiError('Niet gevonden (categorieId of spullenId bestaat niet)', 404)).end()
             } else {
-			    res.status(200).json(rows).end()                
+                let delerArray = [];
+                for(let i = 0; i < rows.length; i++) {
+                    delerArray.push(new DelerResponse(rows[i].Voornaam, rows[i].Achternaam, rows[i].Email))
+                }
+			    res.status(200).json(delerArray).end()                
             }
 		})
     },
@@ -36,21 +37,11 @@ module.exports={
             }
 
             if(rows.length == 0) {
-                let json = {
-                    message: 'Niet gevonden (categorieId of spullenId bestaat niet)',
-                    code: 404,
-                    datetime: Date.now()
-                }
-                res.status(404).json(json).end()
+                res.status(404).json(new ApiError('Niet gevonden (categorieId of spullenId bestaat niet)', 404)).end()
             } else {
                 db.query('SELECT * FROM view_delers WHERE categorieID = ? AND spullenID = ? AND UserID = ?', [req.params.categorieID, req.params.spullenID, decodedUserID], (err, rows, fields) => {
                     if(rows.length !== 0) {
-                        let json = {
-                            message: 'Conflict (Gebruiker is al aangemeld)',
-                            code: 409,
-                            datetime: Date.now()
-                        } 
-                        res.status(409).json(json).end()
+                        res.status(409).json(new ApiError('Conflict (Gebruiker is al aangemeld)', 409)).end()
                     } else {
                         db.query('INSERT INTO delers VALUES (?, ?, ?)', [req.params.categorieID, req.params.spullenID, decodedUserID], (err, rows, fields) => {
                             if(err) {
@@ -60,7 +51,7 @@ module.exports={
                                     if(err) {
                                         res.status(500).json(err).end()
                                     } else {
-                                        res.status(200).json(rows).end()
+                                        res.status(200).json(new DelerResponse(rows[0].Voornaam, rows[0].Achternaam, rows[0].Email)).end()
                                     }
                                 })
                             }
@@ -81,35 +72,20 @@ module.exports={
                 res.status(500).json(err).end()
             }
             if(rows.length == 0) {
-                let json = {
-                    message: 'Niet gevonden (categorieId of spullenId bestaat niet)',
-                    code: 404,
-                    datetime: Date.now()
-                }
-                res.status(404).json(json).end()
+                res.status(404).json(new ApiError('Niet gevonden (categorieId of spullenId bestaat niet)', 404)).end()
             } else {
                 db.query('SELECT * FROM view_delers WHERE categorieID = ? AND spullenID = ? AND UserID = ?', [req.params.categorieID, req.params.spullenID, decodedUserID], (err, rows, fields) => {
                     if(err) {
                         res.status(500).json(err).end()
                     } else {
                         if(rows.length == 0) {
-                            let json = {
-                                message: 'Conflict (Gebruiker mag deze data niet verwijderen)',
-                                code: 409,
-                                datetime: Date.now()
-                            }
-                            res.status(409).json(json).end()
+                            res.status(409).json(new ApiError('Conflict (Gebruiker mag deze data niet verwijderen)', 409)).end()
                         } else {
                             db.query('DELETE * FROM delers WHERE UserID = ?', [decodedUserID], (err, rows, fields) => {
                                 if(err) {
                                     res.status(500).json(err).end()
                                 } else {
-                                    let json = {
-                                        message: 'Verwijdering geslaagd',
-                                        code: 200,
-                                        datetime: Date.now()
-                                    }
-                                    res.status(200).json(json).end()
+                                    res.status(200).json(new ApiError('Verwijdering geslaagd', 200)).end()
                                 }
                             })
                         }
