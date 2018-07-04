@@ -1,6 +1,7 @@
 const auth = require('../authentication/authentication');
 const db = require('../database/db')
 const UserLoginJSON = require('../models/UserLoginJSON')
+const ApiError = require('../models/ApiError')
 const UserRegisterJSON = require('../models/UserRegisterJSON')
 const ValidToken = require('../models/ValidToken')
 var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
