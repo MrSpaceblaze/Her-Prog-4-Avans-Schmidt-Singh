@@ -17,4 +17,4 @@ class DelerResponse {
         return this.email
     }
 }
-module.exports=UserLoginJSON
+module.exports=DelerResponse
