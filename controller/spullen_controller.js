@@ -47,7 +47,7 @@ module.exports={
 	},
 	getBySpullenID: (req,res)=>{
 		db.query('SELECT * FROM spullen WHERE categorie = ? AND ID = ?',[req.params.categorieID,req.params.spullenID],(err,rows,fields)=>{
-			if (rows[0]==null){
+		if (rows.length==0||rows==null||err){
 				res.status(404).json(new ApiError('Niet gevonden', 404))
 			}
 			res.status(200).json(new DingResponse(rows[0].ID, rows[0].naam, rows[0].beschrijving, rows[0].merk, rows[0].soort, rows[0].bouwjaar)).end()
