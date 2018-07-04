@@ -46,11 +46,13 @@ module.exports={
 		
 	},
 	getBySpullenID: (req,res)=>{
-		db.query('SELECT * FROM spullen WHERE categorie = ? AND ID = ?',[req.params.categorieID,req.params.spullenID],(err,rows,fields)=>{
-		if (rows.length==0||rows==null||err){
+		db.query('SELECT * FROM spullen WHERE categorieID = ? AND ID = ?',[req.params.categorieID,req.params.spullenID],(err,rows,fields)=>{
+		if (err||rows==null||rows.length==0){
+			console.log(err)
 				res.status(404).json(new ApiError('Niet gevonden', 404))
 			}
-			res.status(200).json(new DingResponse(rows[0].ID, rows[0].naam, rows[0].beschrijving, rows[0].merk, rows[0].soort, rows[0].bouwjaar)).end()
+			console.log(rows)
+			res.status(200).json(new DingResponse(rows[0].ID, rows[0].Naam, rows[0].beschrijving, rows[0].merk, rows[0].soort, rows[0].bouwjaar)).end()
 		})
 	},
 	putBySpullenID: (req, res)=>{

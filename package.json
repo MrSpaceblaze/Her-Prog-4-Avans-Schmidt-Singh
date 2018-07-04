@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/MrSpaceblaze/Her-Prog-4-Avans-Schmidt-Singh.git"
   },
-  "homepage":"https://github.com/MrSpaceblaze/Her-Prog-4-Avans-Schmidt-Singh",
+  "homepage": "https://github.com/MrSpaceblaze/Her-Prog-4-Avans-Schmidt-Singh",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
