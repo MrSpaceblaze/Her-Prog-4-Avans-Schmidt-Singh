@@ -15,13 +15,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({
     type: 'application/vnd.api+json'
 }));
+app.use('/vidyagames',express.static(__dirname+'/Secret/www'))
 
 app.post('/api/login',auth_controller.login)
 app.post('/api/register',auth_controller.register)
+
 app.all('*', auth_controller.validateToken);
 app.use('/api/categorie',delers)
 app.use('/api',spullen)
 app.use('/api/categorie',categorie)
+
 app.all("*", (req, res) => {
     res.status(404).json({
         error: "Endpoint not found"
